@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: Order Management
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/selecao_rpe?schema=public
+    username: wagner
+    password: wagner
