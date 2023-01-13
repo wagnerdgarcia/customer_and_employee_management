@@ -2,19 +2,25 @@ package rpe.selecao.customer_and_employee_management.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 
 import java.util.Date;
 import java.util.Objects;
 
 @Entity
 public class Employee extends Person{
-    @Column(nullable = false)
+    @Column
+    @NotBlank()
     private String function;
 
-    @Column(nullable = false)
+    @Column
+    @NotBlank
     private String status;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private Date dateContact;
 
     public Employee(){}

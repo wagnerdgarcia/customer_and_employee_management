@@ -1,17 +1,19 @@
 package rpe.selecao.customer_and_employee_management.service;
 
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.stereotype.Service;
 import rpe.selecao.customer_and_employee_management.model.Customer;
 import rpe.selecao.customer_and_employee_management.repository.CustomerRepository;
 import rpe.selecao.customer_and_employee_management.repository.EmpoloyerRepository;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 @Service
-public class ICustomerService implements CustomerService{
-    private final Logger log = Logger.getLogger(ICustomerService.class.getName());
+public class CustomerServiceImpl implements CustomerService{
+    private final Logger log = Logger.getLogger(CustomerServiceImpl.class.getName());
     private final CustomerRepository repository;
-    public ICustomerService (CustomerRepository repository) { this.repository = repository; }
+    public CustomerServiceImpl (CustomerRepository repository) { this.repository = repository; }
     public List<Customer> getAll(){
         return repository.findAll();
     }

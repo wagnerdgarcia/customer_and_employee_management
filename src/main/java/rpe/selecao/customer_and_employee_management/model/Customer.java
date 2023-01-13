@@ -1,6 +1,9 @@
 package rpe.selecao.customer_and_employee_management.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.Date;
 import java.util.Objects;
@@ -8,7 +11,8 @@ import java.util.Objects;
 @Entity
 public class Customer extends Person{
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private Date dateLastService;
 
 

@@ -2,6 +2,7 @@ package rpe.selecao.customer_and_employee_management.model;
 
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.Objects;
 
@@ -13,15 +14,19 @@ public class Person {
     private int id;
 
     @Column(nullable = false)
+    @NotBlank
     private String document;
 
     @Column(nullable = false)
+    @NotBlank
     private String name;
 
     @Column(nullable = false)
+    @NotBlank
     private String phone;
 
     @Column(nullable = false)
+    @NotBlank
     private String address;
 
     public Person() {

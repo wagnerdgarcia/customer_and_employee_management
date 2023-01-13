@@ -8,6 +8,11 @@ spring:
     show-sql: false
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/selecao_rpe?schema=public
-    username: wagner
-    password: wagner
+    url: jdbc:postgresql://localhost:5432/postgres?schema=public
+    username: postgres
+    password: docker
+
+springdoc:
+  api-docs:
+    version: openapi_3_0
+    path: /api-docs

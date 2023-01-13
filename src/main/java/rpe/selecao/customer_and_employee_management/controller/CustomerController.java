@@ -1,15 +1,12 @@
 package rpe.selecao.customer_and_employee_management.controller;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rpe.selecao.customer_and_employee_management.model.Customer;
-import rpe.selecao.customer_and_employee_management.service.ICustomerService;
+import rpe.selecao.customer_and_employee_management.service.CustomerServiceImpl;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -22,9 +19,9 @@ import java.util.logging.Logger;
 @RequestMapping("customer")
 public class CustomerController {
 
-    private final ICustomerService customerService;
+    private final CustomerServiceImpl customerService;
     private final Logger log = Logger.getLogger(CustomerController.class.getName());
-    public CustomerController(final ICustomerService customerService){
+    public CustomerController(final CustomerServiceImpl customerService){
         super();
         this.customerService = customerService;
     }
@@ -42,7 +39,7 @@ public class CustomerController {
             List<Customer> customers = customerService.getAll();
             return new ResponseEntity<List<Customer>>(customers, HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -51,7 +48,6 @@ public class CustomerController {
             description = "Endpoint for querying a Customers",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Return The Customer"),
-                    @ApiResponse(responseCode = "400", description = "Error No Id Found"),
                     @ApiResponse(responseCode = "500")
             }
     )
@@ -60,8 +56,6 @@ public class CustomerController {
             Customer customer = customerService.getById(id);
             return new ResponseEntity<Customer>(customer, HttpStatus.OK);
         }catch (Exception e){
-            if(Objects.equals(e.getMessage(), "No value present"))
-                return new ResponseEntity<String>("error_no_id_found", HttpStatus.BAD_REQUEST);
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -71,7 +65,6 @@ public class CustomerController {
             description = "Endpoint to add a Customers",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Return The Customer"),
-                    @ApiResponse(responseCode = "409", description = "Variable Cannot be null"),
                     @ApiResponse(responseCode = "500")
             }
     )
@@ -80,19 +73,7 @@ public class CustomerController {
             Customer newCustomer = customerService.create(customer);
             return new ResponseEntity<>(newCustomer, HttpStatus.OK);
         }catch (Exception e){
-            String message = e.getMessage();
-            if(
-                    Objects.equals(
-                            message.substring(0, message.indexOf(":")+1),
-                            "not-null property references a null or transient value :"
-                    )
-            )
-                return new ResponseEntity<String>(
-                        "Variable Cannot be null : " + message.substring(message.lastIndexOf(".")+1),
-                        HttpStatus.CONFLICT
-                );
-            else
-                return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -101,8 +82,6 @@ public class CustomerController {
             description = "Endpoint to update a Customers",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Return The Customer"),
-                    @ApiResponse(responseCode = "400", description = "Error No Id Found"),
-                    @ApiResponse(responseCode = "409", description = "Variable Cannot be null"),
                     @ApiResponse(responseCode = "500")
             }
     )
@@ -111,21 +90,7 @@ public class CustomerController {
             Customer newCustomer = customerService.update(id, customer);
             return new ResponseEntity<>(newCustomer, HttpStatus.OK);
         }catch (Exception e){
-            String message = e.getMessage();
-            if(Objects.equals(message, "No value present"))
-                return new ResponseEntity<String>("error_no_id_found", HttpStatus.BAD_REQUEST);
-            else if(
-                    Objects.equals(
-                            message.substring(0, message.indexOf(":")+1),
-                            "not-null property references a null or transient value :"
-                    )
-            )
-                return new ResponseEntity<String>(
-                        "Variable Cannot be null : " + message.substring(message.lastIndexOf(".")+1),
-                        HttpStatus.CONFLICT
-                );
-            else
-                return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -134,7 +99,6 @@ public class CustomerController {
             description = "Endpoint to delete a Customers",
             responses = {
                     @ApiResponse(responseCode = "200"),
-                    @ApiResponse(responseCode = "400", description = "Error No Id Found"),
                     @ApiResponse(responseCode = "500")
             }
     )
@@ -143,8 +107,6 @@ public class CustomerController {
             customerService.delete(id);
             return new ResponseEntity<>("Sucess Delete", HttpStatus.OK);
         }catch (Exception e){
-            if(Objects.equals(e.getMessage(), "No value present"))
-                return new ResponseEntity<String>("error_no_id_found", HttpStatus.BAD_REQUEST);
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

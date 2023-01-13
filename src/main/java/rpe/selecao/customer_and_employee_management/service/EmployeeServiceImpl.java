@@ -10,10 +10,10 @@ import java.util.logging.Logger;
 
 
 @Service
-public class IEmployeeService implements EmployeeService{
-    private final Logger log = Logger.getLogger(IEmployeeService.class.getName());
+public class EmployeeServiceImpl implements EmployeeService{
+    private final Logger log = Logger.getLogger(EmployeeServiceImpl.class.getName());
     private final EmpoloyerRepository repository;
-    public IEmployeeService(EmpoloyerRepository repository){ this.repository = repository; }
+    public EmployeeServiceImpl(EmpoloyerRepository repository){ this.repository = repository; }
 
     public List<Employee> getAll(){
         return repository.findAll();

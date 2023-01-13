@@ -5,9 +5,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import rpe.selecao.customer_and_employee_management.model.Customer;
 import rpe.selecao.customer_and_employee_management.model.Employee;
-import rpe.selecao.customer_and_employee_management.service.IEmployeeService;
+import rpe.selecao.customer_and_employee_management.service.EmployeeServiceImpl;
 
 import java.util.List;
 import java.util.Objects;
@@ -16,9 +15,9 @@ import java.util.logging.Logger;
 @RestController
 @RequestMapping("employee")
 public class EmployeeController {
-    private final IEmployeeService employeeService;
+    private final EmployeeServiceImpl employeeService;
     private final Logger log = Logger.getLogger(EmployeeController.class.getName());
-    public EmployeeController(final IEmployeeService employeeService){
+    public EmployeeController(final EmployeeServiceImpl employeeService){
         super();
         this.employeeService = employeeService;
     }
@@ -36,7 +35,7 @@ public class EmployeeController {
             List<Employee> employees = employeeService.getAll();
             return new ResponseEntity<List<Employee>>(employees, HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -45,7 +44,6 @@ public class EmployeeController {
             description = "Endpoint for querying a Employee",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Return The Employee"),
-                    @ApiResponse(responseCode = "400", description = "Error No Id Found"),
                     @ApiResponse(responseCode = "500")
             }
     )
@@ -54,9 +52,7 @@ public class EmployeeController {
             Employee employee = employeeService.getById(id);
             return new ResponseEntity<>(employee, HttpStatus.OK);
         }catch (Exception e){
-            if(Objects.equals(e.getMessage(), "No value present"))
-                return new ResponseEntity<String>("error_no_id_found", HttpStatus.BAD_REQUEST);
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -65,7 +61,6 @@ public class EmployeeController {
             description = "Endpoint to add a Employee",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Return The Employee"),
-                    @ApiResponse(responseCode = "409", description = "Variable Cannot be null"),
                     @ApiResponse(responseCode = "500")
             }
     )
@@ -74,19 +69,7 @@ public class EmployeeController {
             Employee newEmployee = employeeService.create(employee);
             return new ResponseEntity<>(newEmployee, HttpStatus.OK);
         }catch (Exception e){
-            String message = e.getMessage();
-            if(
-                    Objects.equals(
-                            message.substring(0, message.indexOf(":")+1),
-                            "not-null property references a null or transient value :"
-                    )
-            )
-                return new ResponseEntity<String>(
-                        "Variable Cannot be null : " + message.substring(message.lastIndexOf(".")+1),
-                        HttpStatus.CONFLICT
-                );
-            else
-                return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -95,8 +78,6 @@ public class EmployeeController {
             description = "Endpoint to update a Employee",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Return The Employee"),
-                    @ApiResponse(responseCode = "400", description = "Error No Id Found"),
-                    @ApiResponse(responseCode = "409", description = "Variable Cannot be null"),
                     @ApiResponse(responseCode = "500")
             }
     )
@@ -105,21 +86,7 @@ public class EmployeeController {
             Employee newEmployee = employeeService.update(id, employee);
             return new ResponseEntity<>(newEmployee, HttpStatus.OK);
         }catch (Exception e){
-            String message = e.getMessage();
-            if(Objects.equals(message, "No value present"))
-                return new ResponseEntity<String>("error_no_id_found", HttpStatus.BAD_REQUEST);
-            else if(
-                    Objects.equals(
-                            message.substring(0, message.indexOf(":")+1),
-                            "not-null property references a null or transient value :"
-                    )
-            )
-                return new ResponseEntity<String>(
-                        "Variable Cannot be null : " + message.substring(message.lastIndexOf(".")+1),
-                        HttpStatus.CONFLICT
-                );
-            else
-                return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -128,18 +95,15 @@ public class EmployeeController {
             description = "Endpoint to delete a Employee",
             responses = {
                     @ApiResponse(responseCode = "200"),
-                    @ApiResponse(responseCode = "400", description = "Error No Id Found"),
                     @ApiResponse(responseCode = "500")
             }
     )
     public ResponseEntity<?> deleteEmployee(@PathVariable("id") long id){
         try{
             employeeService.delete(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>("Sucess Delete", HttpStatus.OK);
         }catch (Exception e){
-            if(Objects.equals(e.getMessage(), "No value present"))
-                return new ResponseEntity<String>("error_no_id_found", HttpStatus.BAD_REQUEST);
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
