@@ -8,7 +8,7 @@ import rpe.selecao.customer_and_employee_management.repository.EmpoloyerReposito
 import java.util.List;
 import java.util.logging.Logger;
 @Service
-public class ICustomerService {
+public class ICustomerService implements CustomerService{
     private final Logger log = Logger.getLogger(ICustomerService.class.getName());
     private final CustomerRepository repository;
     public ICustomerService (CustomerRepository repository) { this.repository = repository; }
@@ -18,28 +18,31 @@ public class ICustomerService {
     public Customer getById(long id) {
         return repository.findById(id).get();
     }
-    public Customer create(Customer customer){
+    public Customer create(Customer customer) throws Exception {
         try{
             return repository.save(customer);
         }catch (Exception e){
             log.info("[ErrorCreateCustomer]: " + e.getMessage());
-            return null;
+            throw new Exception(e.getMessage());
         }
     }
-    public Customer update(long id, Customer customer){
+    public Customer update(long id, Customer customer) throws Exception {
         try{
+            if(repository.findById(id).isEmpty()) throw new Exception("No value present");
             customer.setId((int)id);
             return repository.save(customer);
         }catch (Exception e){
             log.info("[ErrorUpdateCustomer]: " + e.getMessage());
-            return null;
+            throw new Exception(e.getMessage());
         }
     }
-    public void delete(long id){
+    public void delete(long id) throws Exception {
         try{
+            if(repository.findById(id).isEmpty()) throw new Exception("No value present");
             repository.deleteById(id);
         }catch (Exception e){
             log.info("[ErrorDeleteCustomer]: " + e.getMessage());
+            throw new Exception(e.getMessage());
         }
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 public interface CustomerService {
     public List<Customer> getAll();
     public Customer getById(long id);
-    public Customer update(long id, Customer customer);
-    public Customer create(Customer customer);
-    public void delete(long id);
+    public Customer update(long id, Customer customer) throws Exception;
+    public Customer create(Customer customer) throws Exception;
+    public void delete(long id) throws Exception;
 }

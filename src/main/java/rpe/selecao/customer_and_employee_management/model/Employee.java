@@ -4,17 +4,19 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 public class Employee extends Person{
-    @Column
+    @Column(nullable = false)
     private String function;
 
-    @Column
+    @Column(nullable = false)
     private String status;
 
-    @Column
+    @Column(nullable = false)
     private Date dateContact;
+
     public Employee(){}
     public Employee(final String document, final String name, final String address, final String phone, String function,String status,Date dateContact){
         super(document, name, phone, address);
@@ -54,5 +56,18 @@ public class Employee extends Person{
                 ", status='" + status + '\'' +
                 ", dateContact=" + dateContact +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Employee employee)) return false;
+        if (!super.equals(o)) return false;
+        return Objects.equals(getFunction(), employee.getFunction()) && Objects.equals(getStatus(), employee.getStatus()) && Objects.equals(getDateContact(), employee.getDateContact());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getFunction(), getStatus(), getDateContact());
     }
 }

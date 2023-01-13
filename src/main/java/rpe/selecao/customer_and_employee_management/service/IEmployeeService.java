@@ -21,28 +21,31 @@ public class IEmployeeService implements EmployeeService{
     public Employee getById(long id){
         return repository.findById(id).get();
     }
-    public Employee create(Employee employee){
+    public Employee create(Employee employee) throws Exception {
         try{
             return repository.save(employee);
         }catch (Exception e){
             log.info("[ErrorCreateEmployee] - " + e.getMessage());
-            return null;
+            throw new Exception(e.getMessage());
         }
     }
-    public Employee update(long id, Employee employee){
+    public Employee update(long id, Employee employee) throws Exception {
         try{
+            if(repository.findById(id).isEmpty()) throw new Exception("No value present");
             employee.setId((int)id);
             return repository.save(employee);
         }catch (Exception e){
             log.info("[ErrorUpdateEmployee] - " + e.getMessage());
-            return null;
+            throw new Exception(e.getMessage());
         }
     }
-    public void delete(long id){
+    public void delete(long id) throws Exception {
         try{
+            if(repository.findById(id).isEmpty()) throw new Exception("No value present");
             repository.deleteById(id);
         }catch (Exception e){
             log.info("[ErrorDeleteEmployee] - " + e.getMessage());
+            throw new Exception(e.getMessage());
         }
     }
 }

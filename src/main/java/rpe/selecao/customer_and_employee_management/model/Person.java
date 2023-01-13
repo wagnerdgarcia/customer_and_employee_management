@@ -1,31 +1,33 @@
 package rpe.selecao.customer_and_employee_management.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import jakarta.persistence.*;
+
+import java.util.Objects;
 
 @Entity
 public class Person {
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column
+    @Column(nullable = false)
     private String document;
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
-    @Column
+    @Column(nullable = false)
     private String phone;
 
-    @Column
+    @Column(nullable = false)
     private String address;
 
-    public Person (){}
+    public Person() {
+    }
 
-    public Person(final String document, final String name, final String phone, final String address){
+    public Person(final String document, final String name, final String phone, final String address) {
         this.document = document;
         this.name = name;
         this.phone = phone;
@@ -39,6 +41,10 @@ public class Person {
     public void setId(int id) {
         this.id = id;
     }
+    public void setId() {
+        this.id = 0;
+    }
+
 
     public String getDocument() {
         return document;
@@ -81,5 +87,17 @@ public class Person {
                 ", phone='" + phone + '\'' +
                 ", address='" + address + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Person person)) return false;
+        return getId() == person.getId() && Objects.equals(getDocument(), person.getDocument()) && Objects.equals(getName(), person.getName()) && Objects.equals(getPhone(), person.getPhone()) && Objects.equals(getAddress(), person.getAddress());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getDocument(), getName(), getPhone(), getAddress());
     }
 }
